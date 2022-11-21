@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.7.21"
     id("io.ktor.plugin") version "2.1.3"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.21"
+    id("org.openapi.generator") version "6.2.1"
 }
 
 group = "name.valery1707.problem.rshb"
@@ -29,7 +30,35 @@ dependencies {
     implementation("io.ktor:ktor-server-default-headers-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+}
+
+openApiGenerate {
+    generatorName.set("kotlin")
+    inputSpec.set("$rootDir/src/main/open-api/rshb/svoe-rodnoe.json")
+    outputDir.set("$buildDir/generated/open-api/rshb/svoe-rodnoe")
+    val apiPkg = "ru.rshb.svoe.rodnoe"
+    apiPackage.set("$apiPkg.api")
+    invokerPackage.set("$apiPkg.invoker")
+    modelPackage.set("$apiPkg.model")
+    configOptions.put("library", "multiplatform")
+    configOptions.put("dateLibrary", "java8")
+    configOptions.put("enumPropertyNaming", "PascalCase")
+    configOptions.put("packageName", "$apiPkg.client")
+}
+sourceSets {
+    main {
+        java {
+            srcDir("$buildDir/generated/open-api/rshb/svoe-rodnoe/src/main/kotlin")
+        }
+    }
+}
+//todo Declarative dependency
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    dependsOn("openApiGenerate")
 }
