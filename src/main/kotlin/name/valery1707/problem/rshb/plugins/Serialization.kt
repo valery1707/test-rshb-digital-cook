@@ -1,28 +1,22 @@
 package name.valery1707.problem.rshb.plugins
 
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.serialization.jackson.*
-import com.fasterxml.jackson.databind.*
-import io.ktor.server.plugins.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
-import io.ktor.server.request.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.Json
 
 fun Application.configureSerialization() {
     install(ContentNegotiation) {
-        json()
-        jackson {
-            enable(SerializationFeature.INDENT_OUTPUT)
-        }
+        json(Json {
+            isLenient = true
+            prettyPrint = true
+        })
     }
 
     routing {
         get("/json/kotlinx-serialization") {
-            call.respond(mapOf("hello" to "world"))
-        }
-        get("/json/jackson") {
             call.respond(mapOf("hello" to "world"))
         }
     }
