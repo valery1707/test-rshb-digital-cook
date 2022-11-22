@@ -48,6 +48,7 @@ tasks.withType<Test> {
 
 openApiGenerate {
     generatorName.set("kotlin")
+    //Downloaded from https://api.svoe-rodnoe.ru/api/static/index.html, reformatted, removed values from enum in query params
     inputSpec.set("$rootDir/src/main/open-api/rshb/svoe-rodnoe.json")
     outputDir.set("$buildDir/generated/open-api/rshb/svoe-rodnoe")
     val apiPkg = "ru.rshb.svoe.rodnoe"
